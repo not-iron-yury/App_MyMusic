@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase/config';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
 interface ISong {
   artist: string;
@@ -9,15 +9,61 @@ interface ISong {
   year: number;
 }
 
-const songs = ref<ISong[]>([]);
+/* ------------------------------------------------------- */
 
-const getData = async <T extends ISong>(): Promise<T[]> => {
-  const querySnapshot = await getDocs(collection(db, 'songs'));
-  return querySnapshot.docs.map(doc => doc.data() as T);
+// Вариант 1
+// Обыкновенная загрузка данных из БД
+// ключевой метод - getDocs
+//
+// const songs = ref<ISong[]>([]);
+//
+// const getData = async <T extends ISong>(): Promise<T[]> => {
+//   const querySnapshot = await getDocs(collection(db, 'songs'));
+//   return querySnapshot.docs.map(doc => doc.data() as T);
+// };
+//
+// onMounted(async (): Promise<void> => {
+//   songs.value = await getData();
+// });
+
+/* ------------------------------------------------------- */
+
+// Вариант 2
+// Загрузка данных из БД с realtime updates
+// ключевой метод - onSnapshot
+
+const songs = <ISong[]>reactive([]);
+
+// Оптимизированный подход
+const getData = async (): Promise<void> => {
+  const q = query(collection(db, 'songs'));
+  onSnapshot(q, querySnapshot => {
+    const updateData = querySnapshot.docs; // определяем длинну нового массива
+    const lenUptData = updateData.length;
+    songs.length = updateData.length; // приводим длинну songs к актуальному значению
+    // обновляем массив songs поэлементно
+    for (let i = 0; i < lenUptData; i++) {
+      songs[i] = updateData[i].data() as ISong;
+    }
+  });
 };
 
+/* --------------------------- */
+
+// Читабельный поход
+// const getData = async (): Promise<void> => {
+//   const q = query(collection(db, 'songs'));
+//   onSnapshot(q, querySnapshot => {
+//     songs.length = 0; // удаляем из массива songs все элементы
+//     // заново заполняем songs
+//     querySnapshot.forEach(doc => {
+//       songs.push(doc.data() as ISong);
+//     });
+//   });
+// };
+
 onMounted(async (): Promise<void> => {
-  songs.value = await getData();
+  await getData();
 });
 </script>
 
