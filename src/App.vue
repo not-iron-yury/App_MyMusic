@@ -31,22 +31,23 @@ interface ISong {
 // Вариант 2
 // Загрузка данных из БД с realtime updates
 // ключевой метод - onSnapshot
+// reactive
 
-const songs = <ISong[]>reactive([]);
+// const songs = <ISong[]>reactive([]);
 
-// Оптимизированный подход
-const getData = async (): Promise<void> => {
-  const q = query(collection(db, 'songs'));
-  onSnapshot(q, querySnapshot => {
-    const updateData = querySnapshot.docs; // определяем длинну нового массива
-    const lenUptData = updateData.length;
-    songs.length = updateData.length; // приводим длинну songs к актуальному значению
-    // обновляем массив songs поэлементно
-    for (let i = 0; i < lenUptData; i++) {
-      songs[i] = updateData[i].data() as ISong;
-    }
-  });
-};
+// // Оптимизированный подход
+// const getData = async (): Promise<void> => {
+//   const q = query(collection(db, 'songs'));
+//   onSnapshot(q, querySnapshot => {
+//     const updateData = querySnapshot.docs; // определяем длинну нового массива
+//     const lenUptData = updateData.length;
+//     songs.length = updateData.length; // приводим длинну songs к актуальному значению
+//     // обновляем массив songs поэлементно
+//     for (let i = 0; i < lenUptData; i++) {
+//       songs[i] = updateData[i].data() as ISong;
+//     }
+//   });
+// };
 
 /* --------------------------- */
 
@@ -62,9 +63,29 @@ const getData = async (): Promise<void> => {
 //   });
 // };
 
-onMounted(async (): Promise<void> => {
-  await getData();
-});
+// onMounted(async () => await getData());
+
+/* ------------------------------------------------------- */
+
+// Вариант 2-1
+// ref (для полноты)
+
+const songs = ref<ISong[]>([]);
+
+const getData = async () => {
+  const q = query(collection(db, 'songs'));
+
+  onSnapshot(q, querySnapshot => {
+    const newData = <ISong[]>[];
+    querySnapshot.forEach(doc => {
+      newData.push(doc.data() as ISong);
+    });
+    songs.value = newData;
+  });
+};
+
+onMounted(async () => await getData());
+/* ------------------------------------------------------- */
 </script>
 
 <template>
