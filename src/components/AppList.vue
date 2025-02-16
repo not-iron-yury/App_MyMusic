@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ISong } from 'interfaces';
+import type { ISong } from '../interfaces';
 import { validateSongs } from '../validators';
 
 const prop = defineProps({
@@ -20,8 +20,8 @@ const prop = defineProps({
           <v-icon class="mdi mdi-play-circle-outline opacity-30"></v-icon>
         </template>
 
-        <v-list-item-title v-text="item.title" class="text-left"></v-list-item-title>
-        <p class="text-left">{{ item.artist }}</p>
+        <v-list-item-title v-text="item.title" class="text-left font-weight-medium opacity-60"></v-list-item-title>
+        <p class="text-left text-subtitle-2">{{ item.artist }}</p>
       </v-list-item>
     </v-list>
   </v-card>
