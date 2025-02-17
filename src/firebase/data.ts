@@ -1,14 +1,14 @@
-import { collection, query, onSnapshot, addDoc } from 'firebase/firestore';
+import { collection, query, onSnapshot, addDoc, getDocs, doc, deleteDoc, where } from 'firebase/firestore';
 import { Ref } from 'vue';
 import { db } from '../firebase/config';
 import type { ISong } from '../interfaces';
 
-const COLLECTION_NAME = 'songs';
+const DB_NAME = 'songs';
 
 // Вариант 2-1
 // ref (для полноты)
-const getData = async (songs: Ref<ISong[]>) => {
-  const q = query(collection(db, COLLECTION_NAME));
+export const getSongs = async (songs: Ref<ISong[]>) => {
+  const q = query(collection(db, DB_NAME));
 
   onSnapshot(q, querySnapshot => {
     const newData = <ISong[]>[];
@@ -19,21 +19,27 @@ const getData = async (songs: Ref<ISong[]>) => {
   });
 };
 
-const addSong = async (song: ISong) => {
-  await addDoc(collection(db, COLLECTION_NAME), song);
+export const addSong = async (song: ISong) => {
+  await addDoc(collection(db, DB_NAME), song);
 };
 
-export { getData, addSong };
+export const deleteSong = async (title: string) => {
+  const q = query(collection(db, 'songs'), where('title', '==', title));
+
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach(doc => deleteDoc(doc.ref));
+};
 
 /* ------------------------------------------------------- */
-// Другие варианты функции getData
+// Другие варианты функции getSongs
 // Вариант 1
 // Обыкновенная загрузка данных из БД
 // ключевой метод - getDocs
 //
 // const songs = ref<ISong[]>([]);
 //
-// const getData = async <T extends ISong>(): Promise<T[]> => {
+// const getSongs = async <T extends ISong>(): Promise<T[]> => {
 //   const querySnapshot = await getDocs(collection(db, 'songs'));
 //   return querySnapshot.docs.map(doc => doc.data() as T);
 // };
@@ -50,7 +56,7 @@ export { getData, addSong };
 /* ------------- */
 
 // // Оптимизированный подход
-// const getData = async (songs: Ref<ISong[]>) => {
+// const getSongs = async (songs: Ref<ISong[]>) => {
 //   const q = query(collection(db, 'songs'));
 //   onSnapshot(q, querySnapshot => {
 //     const updateData = querySnapshot.docs; // определяем длинну нового массива
@@ -66,7 +72,7 @@ export { getData, addSong };
 /* ------------- */
 
 // Читабельный поход
-// const getData = async (songs: Ref<ISong[]>) => {
+// const getSongs = async (songs: Ref<ISong[]>) => {
 //   const q = query(collection(db, 'songs'));
 //   onSnapshot(q, querySnapshot => {
 //     songs.length = 0; // удаляем из массива songs все элементы
@@ -77,6 +83,6 @@ export { getData, addSong };
 //   });
 // };
 
-// onMounted(async () => await getData());
+// onMounted(async () => await getSongs());
 
 /* ------------------------------------------------------- */
