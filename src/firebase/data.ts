@@ -1,10 +1,32 @@
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import { collection, query, onSnapshot, addDoc } from 'firebase/firestore';
 import { Ref } from 'vue';
 import { db } from '../firebase/config';
 import type { ISong } from '../interfaces';
 
-/* ------------------------------------------------------- */
+const COLLECTION_NAME = 'songs';
 
+// Вариант 2-1
+// ref (для полноты)
+const getData = async (songs: Ref<ISong[]>) => {
+  const q = query(collection(db, COLLECTION_NAME));
+
+  onSnapshot(q, querySnapshot => {
+    const newData = <ISong[]>[];
+    querySnapshot.forEach(doc => {
+      newData.push(doc.data() as ISong);
+    });
+    songs.value = newData;
+  });
+};
+
+const addSong = async (song: ISong) => {
+  await addDoc(collection(db, COLLECTION_NAME), song);
+};
+
+export { getData, addSong };
+
+/* ------------------------------------------------------- */
+// Другие варианты функции getData
 // Вариант 1
 // Обыкновенная загрузка данных из БД
 // ключевой метод - getDocs
@@ -58,20 +80,3 @@ import type { ISong } from '../interfaces';
 // onMounted(async () => await getData());
 
 /* ------------------------------------------------------- */
-
-// Вариант 2-1
-// ref (для полноты)
-
-const getData = async (songs: Ref<ISong[]>) => {
-  const q = query(collection(db, 'songs'));
-
-  onSnapshot(q, querySnapshot => {
-    const newData = <ISong[]>[];
-    querySnapshot.forEach(doc => {
-      newData.push(doc.data() as ISong);
-    });
-    songs.value = newData;
-  });
-};
-
-export { getData };

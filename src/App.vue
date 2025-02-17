@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getData } from './firebase/data';
+import { getData, addSong } from './firebase/data';
 import type { ISong } from './interfaces';
 import AppList from './components/AppList.vue';
 import AppCard from './components/AppCard.vue';
@@ -34,14 +34,25 @@ const songsList: ISong[] = [
   },
 ];
 
-onMounted(async () => await getData(songs));
+const isIncludesSongInList = (obj: ISong): boolean => {
+  return songs.value.some((item: ISong) => item.id === obj.id && item.title === obj.title);
+};
 
+const addSongToList = async (song: ISong) => {
+  if (!isIncludesSongInList(song)) {
+    await addSong(song);
+  } else {
+    console.log('Эта песня уже есть в списке');
+  }
+};
+
+onMounted(async () => await getData(songs));
 /* ------------------------------------------------------- */
 </script>
 
 <template>
-  <main>
-    <app-card :songs-list="songsList" />
+  <main class="main">
+    <app-card :songs-list="songsList" @add-song="addSongToList" />
     <app-list :songs="songs" />
   </main>
 </template>

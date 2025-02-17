@@ -17,7 +17,7 @@ export function validateSongs(songs: Array<ISong>): boolean {
   return true;
 }
 
-function validateSong(song: ISong): boolean {
+export function validateSong(song: ISong): boolean {
   // соответствие свойств объекта своему типу
   if (
     typeof song.artist !== 'string' ||

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ISong } from '../interfaces';
-import { validateSongs } from '../validators';
+import { validateSongs, validateSong } from '../validators';
 
 const props = defineProps({
   songsList: {
@@ -8,6 +8,10 @@ const props = defineProps({
     required: true,
     validator: validateSongs,
   },
+});
+
+const emit = defineEmits({
+  addSong: validateSong,
 });
 
 const randomSong = props.songsList[Math.floor(Math.random() * props.songsList.length)];
@@ -18,7 +22,6 @@ const randomSong = props.songsList[Math.floor(Math.random() * props.songsList.le
     <v-card variant="tonal">
       <v-card-item>
         <v-card-title class="text-left">Player</v-card-title>
-        <!-- <v-card-subtitle class="text-left">{{ props.subtitle }}</v-card-subtitle> -->
       </v-card-item>
       <v-card-text class="text-left song">
         <v-icon class="play" icon="mdi-play" />
@@ -28,7 +31,7 @@ const randomSong = props.songsList[Math.floor(Math.random() * props.songsList.le
         </div>
       </v-card-text>
       <v-card-actions>
-        <v-btn>В избранное</v-btn>
+        <v-btn @click="$emit('addSong', randomSong)">В избранное</v-btn>
       </v-card-actions>
     </v-card>
   </section>
