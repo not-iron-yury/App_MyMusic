@@ -1,4 +1,4 @@
-import { collection, query, onSnapshot, addDoc, getDocs, doc, deleteDoc, where } from 'firebase/firestore';
+import { collection, query, onSnapshot, addDoc, getDocs, deleteDoc, where } from 'firebase/firestore';
 import { Ref } from 'vue';
 import { db } from '../firebase/config';
 import type { ISong } from '../interfaces';
@@ -7,7 +7,8 @@ const DB_NAME = 'songs';
 
 // Вариант 2-1
 // ref (для полноты)
-export const getSongs = async (songs: Ref<ISong[]>) => {
+export const getSongs = async (songs: Ref<ISong[]>, isLoading: Ref<boolean>) => {
+  isLoading.value = true;
   const q = query(collection(db, DB_NAME));
 
   onSnapshot(q, querySnapshot => {
@@ -16,6 +17,7 @@ export const getSongs = async (songs: Ref<ISong[]>) => {
       newData.push(doc.data() as ISong);
     });
     songs.value = newData;
+    isLoading.value = false;
   });
 };
 

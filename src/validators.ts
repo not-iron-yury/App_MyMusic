@@ -40,3 +40,7 @@ export function validateSong(song: ISong): boolean {
 
   return true;
 }
+
+export function isBoolean(value: any): boolean {
+  return typeof value === 'boolean';
+}

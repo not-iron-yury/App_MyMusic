@@ -6,6 +6,7 @@ import AppList from './components/AppList.vue';
 import AppCard from './components/AppCard.vue';
 
 const songs = ref<ISong[]>([]);
+const isLoading = ref<boolean>(false);
 
 const songsList: ISong[] = [
   {
@@ -58,14 +59,14 @@ const addSongToList = async (song: ISong) => {
   }
 };
 
-onMounted(async () => await getSongs(songs));
+onMounted(async () => await getSongs(songs, isLoading));
 /* ------------------------------------------------------- */
 </script>
 
 <template>
   <main class="main">
     <app-card :songs-list="songsList" @add-song="addSongToList" />
-    <app-list :songs="songs" />
+    <app-list :songs="songs" :is-loading="isLoading" />
   </main>
 </template>
 
