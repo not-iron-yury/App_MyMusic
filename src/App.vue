@@ -7,6 +7,8 @@ import AppCard from './components/AppCard.vue';
 
 const songs = ref<ISong[]>([]);
 const isLoading = ref<boolean>(false);
+const addedStatus = ref<boolean>(false);
+const addedStatusText = ref<string>('');
 
 const songsList: ISong[] = [
   {
@@ -54,9 +56,11 @@ const isIncludesSongInList = (obj: ISong): boolean => {
 const addSongToList = async (song: ISong) => {
   if (!isIncludesSongInList(song)) {
     await addSong(song);
+    addedStatusText.value = 'Песня добавлена в избранное';
   } else {
-    console.log('Эта песня уже есть в списке');
+    addedStatusText.value = 'Эта песня уже есть в списке';
   }
+  addedStatus.value = true;
 };
 
 onMounted(async () => await getSongs(songs, isLoading));
@@ -67,6 +71,10 @@ onMounted(async () => await getSongs(songs, isLoading));
   <main class="main">
     <app-card :songs-list="songsList" @add-song="addSongToList" />
     <app-list :songs="songs" :is-loading="isLoading" />
+
+    <v-snackbar :timeout="2000" color="primary" variant="tonal" v-model="addedStatus">
+      {{ addedStatusText }}
+    </v-snackbar>
   </main>
 </template>
 
