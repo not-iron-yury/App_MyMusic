@@ -1,5 +1,31 @@
-# Vue 3 + TypeScript + Vite
+# Приложение "Список избранных песен"
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+### Описание проекта:
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+Прилоение тут для галочки и хоть какой-то визуализации. Основная задача была потыкать еще немного работу с беком. Т.к. здесь у меня мало практики и понимания.
+
+Само приложение представляет из себя список песен, в который можно добавлять новые и удалять старые. Повторение уже пройденного материала по firebase и typescript.
+
+Плюсом попробовал библиотеку компонентов Vuetify (для сравнения с Primevue).
+
+Ссылка на [app-my-music-list](https://app-my-music-list.vercel.app) (размещено на vercel.com).
+
+##### Стек:
+
+- TypeScript
+- Vue 3
+- Firebase
+- Vuetify
+- Vite
+
+### Решеные задачи и практика:
+
+- Практика TypeScript
+- Практика взаимодействия с беком (добавление и удаление данных)
+- Знакомство с библиотекой Vuetify
+
+#### Резюме
+
+1. Очевидное. От реализации бекэнда засивисит реализация части логики фронта. Как взаимодействовать с беком, как взаимодействовать с данными и тд.
+2. Еще очевидное. Если не понимаешь, как работает твой бек, можно сильно уложнить себе работу с фронтом.
+3. Внезапное. Возникло желание написать свой бек. Пусть самый примитивный и простой, главное глянуть на вебчик с другой стороны. После Nuxt чекну обязательно nodejs.
